@@ -81,24 +81,49 @@ const tube = (T, pts, r, closed = false, segs = 64) =>
 
 /* ---------- модели ---------- */
 function helmet(T, M) {
+  // Все части оболочки лежат в одной группе с общим растяжением —
+  // поэтому рёбра и полоса точно повторяют купол и не «проваливаются» в него.
   const g = new T.Group();
-  const S = [1, 0.86, 1.14];
-  g.add(mesh(T, new T.SphereGeometry(1, 64, 32, 0, Math.PI * 2, 0, Math.PI / 2), M.white, [0, 0, 0], [0, 0, 0], S));
-  // гребни
-  for (const [x, r] of [[0, 0.085], [-0.34, 0.045], [0.34, 0.045]]) {
+  const SX = 1, SY = 0.9, SZ = 1.14;
+  const shell = new T.Group(); shell.scale.set(SX, SY, SZ); g.add(shell);
+  const domeMat = M.white.clone(); domeMat.side = T.DoubleSide;
+  shell.add(mesh(T, new T.SphereGeometry(1, 96, 48, 0, Math.PI * 2, 0, Math.PI / 2), domeMat));
+  // рёбра: дуги по поверхности купола (центр трубки на поверхности), с закруглёнными концами
+  const ridge = (x, r, yFront, yBack) => {
     const k = Math.sqrt(1 - x * x);
-    const ridge = mesh(T, new T.TorusGeometry(k, r, 14, 72, Math.PI), M.white, [x, 0, 0], [0, Math.PI / 2, 0], [1, 0.86, 1.14]);
-    g.add(ridge);
+    const a0 = Math.asin(Math.min(0.98, yFront / k)), a1 = Math.PI - Math.asin(Math.min(0.98, yBack / k));
+    const geo = new T.TorusGeometry(k, r, 16, 96, a1 - a0);
+    const m = mesh(T, geo, M.white);
+    const holder = new T.Group(); holder.position.x = x; holder.rotation.y = -Math.PI / 2;
+    m.rotation.z = a0; holder.add(m);
+    for (const a of [a0, a1]) holder.add(mesh(T, new T.SphereGeometry(r, 16, 12), M.white, [Math.cos(a) * k, Math.sin(a) * k, 0]));
+    shell.add(holder);
+  };
+  ridge(0, 0.075, 0.62, 0.24);
+  ridge(-0.36, 0.045, 0.26, 0.24);
+  ridge(0.36, 0.045, 0.26, 0.24);
+  // синяя полоса чуть снаружи купола, ниже начала рёбер
+  shell.add(mesh(T, new T.CylinderGeometry(0.994, 1.008, 0.17, 96, 1, true), M.navy, [0, 0.1, 0]));
+  // козырёк: кольцо с выносом вперёд, вырез под купол (без перекрытия поверхностей)
+  const outer = new T.Shape(), hole = new T.Path(), N = 96;
+  for (let i = 0; i <= N; i++) {
+    const t = (i / N) * Math.PI * 2, front = Math.max(0, Math.sin(t));
+    const x = 1.13 * Math.cos(t), z = (1.24 + 0.3 * front * front * front) * Math.sin(t);
+    i ? outer.lineTo(x, z) : outer.moveTo(x, z);
+    const hx = 0.975 * Math.cos(t), hz = 1.11 * Math.sin(t);
+    i ? hole.lineTo(hx, hz) : hole.moveTo(hx, hz);
   }
-  // синяя полоса
-  g.add(mesh(T, new T.CylinderGeometry(1.012, 1.02, 0.17, 72, 1, true), M.navy, [0, 0.085, 0], [0, 0, 0], [1, 1, 1.14]));
-  // козырёк
-  const brim = mesh(T, new T.CylinderGeometry(1.06, 1.1, 0.05, 72), M.white, [0, -0.01, 0.16], [0, 0, 0], [1, 1, 1.2]);
+  outer.holes.push(hole);
+  const brimGeo = new T.ExtrudeGeometry(outer, { depth: 0.035, bevelEnabled: true, bevelThickness: 0.012, bevelSize: 0.012, bevelSegments: 3, curveSegments: 8 });
+  const brim = mesh(T, brimGeo, M.white, [0, 0.01, 0], [Math.PI / 2, 0, 0]);
   g.add(brim);
-  // золотая эмблема спереди
-  const e = mesh(T, new T.CylinderGeometry(0.12, 0.12, 0.03, 40), M.gold);
-  e.position.set(0, 0.43, 0.985);
-  e.lookAt(0, 0.43 + 0.5, 0.985 + 0.87); e.rotateX(Math.PI / 2);
+  // золотая эмблема спереди: на поверхности, по нормали, между рёбрами
+  const phi = 0.36, ux = 0, uy = Math.sin(phi), uz = Math.cos(phi);
+  const pos = new T.Vector3(ux * SX, uy * SY, uz * SZ);
+  const nrm = new T.Vector3(ux / SX, uy / SY, uz / SZ).normalize();
+  const e = mesh(T, new T.CylinderGeometry(0.11, 0.11, 0.026, 40), M.gold);
+  e.position.copy(pos).addScaledVector(nrm, 0.022);
+  e.quaternion.setFromUnitVectors(new T.Vector3(0, 1, 0), nrm);
   g.add(e);
   return g;
 }
@@ -211,13 +236,23 @@ function carabiner(T, M) {
 }
 
 function sling(T, M) {
+  // Каска, рядом плоская бухта страховочного стропа (витки с зазором) и отдельно лежащий карабин.
+  // Все предметы стоят на одном уровне пола (низ козырька ≈ -0.037) и не пересекаются.
   const g = new T.Group();
   g.add(helmet(T, M));
-  const loop = [];
-  for (let i = 0; i < 12; i++) { const a = (i / 12) * Math.PI * 2; loop.push([Math.cos(a) * 1.25, Math.sin(a * 2) * 0.08, Math.sin(a) * 0.55]); }
-  const s = mesh(T, tube(T, loop, 0.065, true, 120), M.ice, [0.35, -0.08, 0.95], [0.1, 0.3, 0]);
-  g.add(s);
-  const c = carabiner(T, M); c.position.set(1.55, 0.05, 1.05); c.rotation.set(0.2, -0.5, -0.4); g.add(c);
+  const FLOOR = -0.037, r = 0.06, R0 = 0.3, turns = 2.25, pitch = 2.25 * r, pts = [];
+  for (let i = 0; i <= 160; i++) {
+    const a = (i / 160) * turns * Math.PI * 2;
+    const R = R0 + (a / (Math.PI * 2)) * pitch;
+    pts.push([Math.cos(a) * R, r, Math.sin(a) * R]);
+  }
+  const coil = mesh(T, tube(T, pts, r, false, 320), M.ice, [1.85, FLOOR, 0.5], [0, 0.6, 0]);
+  for (const p of [pts[0], pts[pts.length - 1]]) coil.add(mesh(T, new T.SphereGeometry(r, 14, 10), M.ice, p));
+  g.add(coil);
+  const c = carabiner(T, M);
+  c.rotation.set(-Math.PI / 2, 0, 0.9);
+  c.position.set(0.35, FLOOR + 0.06, 1.86);
+  g.add(c);
   return g;
 }
 

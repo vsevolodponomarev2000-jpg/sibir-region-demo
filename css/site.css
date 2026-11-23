@@ -441,3 +441,6 @@ a.net:not(.is-off):hover{border-color:var(--navy);background:var(--ice0)}
   .chip{flex:none}
   .lb-prev,.lb-next{top:auto;bottom:22px;transform:none}
 }
+
+/* скрытые элементы (фильтр вакансий и др.) не должны перебиваться display у классов */
+[hidden]{display:none!important}

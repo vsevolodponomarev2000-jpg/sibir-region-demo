@@ -80,23 +80,25 @@ const tube = (T, pts, r, closed = false, segs = 64) =>
   new T.TubeGeometry(new T.CatmullRomCurve3(pts.map((p) => new T.Vector3(...p)), closed), segs, r, 12, closed);
 
 /* ---------- модели ---------- */
-function helmet(T, M) {
+function helmet(T, M, domeColor) {
   // Все части оболочки лежат в одной группе с общим растяжением —
   // поэтому рёбра и полоса точно повторяют купол и не «проваливаются» в него.
   const g = new T.Group();
   const SX = 1, SY = 0.9, SZ = 1.14;
   const shell = new T.Group(); shell.scale.set(SX, SY, SZ); g.add(shell);
-  const domeMat = M.white.clone(); domeMat.side = T.DoubleSide;
+  const shellMat = domeColor ? M.white.clone() : M.white;
+  if (domeColor) shellMat.color.set(domeColor);
+  const domeMat = shellMat.clone(); domeMat.side = T.DoubleSide;
   shell.add(mesh(T, new T.SphereGeometry(1, 96, 48, 0, Math.PI * 2, 0, Math.PI / 2), domeMat));
   // рёбра: дуги по поверхности купола (центр трубки на поверхности), с закруглёнными концами
   const ridge = (x, r, yFront, yBack) => {
     const k = Math.sqrt(1 - x * x);
     const a0 = Math.asin(Math.min(0.98, yFront / k)), a1 = Math.PI - Math.asin(Math.min(0.98, yBack / k));
     const geo = new T.TorusGeometry(k, r, 16, 96, a1 - a0);
-    const m = mesh(T, geo, M.white);
+    const m = mesh(T, geo, shellMat);
     const holder = new T.Group(); holder.position.x = x; holder.rotation.y = -Math.PI / 2;
     m.rotation.z = a0; holder.add(m);
-    for (const a of [a0, a1]) holder.add(mesh(T, new T.SphereGeometry(r, 16, 12), M.white, [Math.cos(a) * k, Math.sin(a) * k, 0]));
+    for (const a of [a0, a1]) holder.add(mesh(T, new T.SphereGeometry(r, 16, 12), shellMat, [Math.cos(a) * k, Math.sin(a) * k, 0]));
     shell.add(holder);
   };
   ridge(0, 0.075, 0.62, 0.24);
@@ -115,7 +117,7 @@ function helmet(T, M) {
   }
   outer.holes.push(hole);
   const brimGeo = new T.ExtrudeGeometry(outer, { depth: 0.035, bevelEnabled: true, bevelThickness: 0.012, bevelSize: 0.012, bevelSegments: 3, curveSegments: 8 });
-  const brim = mesh(T, brimGeo, M.white, [0, 0.01, 0], [Math.PI / 2, 0, 0]);
+  const brim = mesh(T, brimGeo, shellMat, [0, 0.01, 0], [Math.PI / 2, 0, 0]);
   g.add(brim);
   // золотая эмблема спереди: на поверхности, по нормали, между рёбрами
   const phi = 0.36, ux = 0, uy = Math.sin(phi), uz = Math.cos(phi);
@@ -434,6 +436,9 @@ const BUILD = { helmet, wrench, hammer, trowel, level, bucket, sling, rebar, car
 window.SRTools = {
   PAL, materials, env, heroSet,
   build(T, name, M) { const f = BUILD[name]; if (!f) throw new Error("нет модели " + name); return f(T, M || materials(T)); },
-  names: Object.keys(BUILD),
+  get names() { return Object.keys(BUILD); },
+  // для дополнительных модулей (workers3d.js — 3D-рабочие, только для рендера картинок)
+  register(name, fn) { BUILD[name] = fn; },
+  helpers: { mesh, rrect, extrude, rbox, tube, helmet, wrench, hammer, trowel, level, bucket, carabiner, shovel, wheelbarrow, pallet },
 };
 })();

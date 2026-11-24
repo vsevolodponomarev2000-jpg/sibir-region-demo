@@ -131,4 +131,35 @@ if ("IntersectionObserver" in window && !matchMedia("(prefers-reduced-motion: re
   const io = new IntersectionObserver((es) => es.forEach((en) => { if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } }), { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
   rv.forEach((el) => io.observe(el));
 } else rv.forEach((el) => el.classList.add("in"));
+
+/* ---------- форма записи на обучение (демо: никуда не отправляет, файлы остаются в браузере) ---------- */
+const tf = $("#trainForm");
+if (tf) {
+  const list = $(".tf-files", tf), msg = $(".tf-msg", tf), inp = tf.querySelector('input[name="docs"]');
+  const MAX_FILES = 5, MAX_BYTES = 10 * 1024 * 1024;
+  const show = (text, isErr) => { msg.hidden = false; msg.classList.toggle("is-err", isErr); msg.textContent = text; };
+  inp.addEventListener("change", () => {
+    list.textContent = "";
+    [...inp.files].forEach((f) => {
+      const li = document.createElement("li");
+      li.textContent = `${f.name} · ${(f.size / 1048576).toFixed(1)} МБ${f.size > MAX_BYTES ? " — больше 10 МБ" : ""}`;
+      if (f.size > MAX_BYTES) li.className = "is-err";
+      list.appendChild(li);
+    });
+  });
+  tf.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const files = [...inp.files];
+    const fio = tf.elements.fio.value.trim(), digits = tf.elements.phone.value.replace(/\D/g, "");
+    let err = "";
+    if (fio.length < 3) err = "Укажите ФИО.";
+    else if (digits.length < 10) err = "Укажите контактный телефон.";
+    else if (files.length > MAX_FILES) err = "Можно приложить не больше 5 файлов.";
+    else if (files.some((f) => f.size > MAX_BYTES)) err = "Каждый файл — не больше 10 МБ.";
+    else if (!tf.elements.agree.checked) err = "Нужно согласие на обработку персональных данных.";
+    if (err) return show(err, true);
+    const phone = (window.SR_CONFIG && window.SR_CONFIG.phone) || "";
+    show(`Демо-версия: здесь заявка${files.length ? ` и ${files.length} файл(а)` : ""} уйдут менеджеру учебного центра — подключим на этапе 2. Пока можно позвонить: ${phone}.`, false);
+  });
+}
 })();

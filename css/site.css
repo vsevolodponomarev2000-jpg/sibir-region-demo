@@ -444,3 +444,29 @@ a.net:not(.is-off):hover{border-color:var(--navy);background:var(--ice0)}
 
 /* скрытые элементы (фильтр вакансий и др.) не должны перебиваться display у классов */
 [hidden]{display:none!important}
+
+/* ---------- вакансия: приглашение и форма обучения ---------- */
+.job-invite{margin-top:16px;padding:22px 26px;border-radius:var(--r);background:var(--ice0,#eef5fc);border:1px solid var(--line)}
+.job-invite p{margin-bottom:14px}
+.job-invite a{color:var(--navy);font-weight:700;white-space:nowrap}
+.train-form{margin-top:16px;padding:28px 26px;border-radius:var(--r);background:linear-gradient(140deg,var(--navy) 0%,#1d4c82 100%);color:#fff;display:grid;gap:14px}
+.train-form h2{font-size:24px;font-weight:800;color:#fff;margin:0}
+.tf-sub{color:rgba(255,255,255,.82);font-size:15px;margin:0}
+.tf-field{display:grid;gap:6px;font-size:14px;font-weight:600}
+.tf-field input{height:50px;border-radius:12px;border:1px solid rgba(255,255,255,.25);background:#fff;color:#0f2f57;padding:0 14px;font:inherit;font-weight:500}
+.tf-field input:focus{outline:3px solid rgba(188,215,239,.7);outline-offset:1px}
+.tf-file{position:relative;display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding:14px;border:1.5px dashed rgba(255,255,255,.45);border-radius:12px;cursor:pointer}
+.tf-file .ico{width:20px;height:20px;color:#bcd7ef}
+.tf-file-t{font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.tf-file small{flex-basis:100%;color:rgba(255,255,255,.7);font-size:12.5px}
+.tf-file input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.tf-file:focus-within{outline:3px solid rgba(188,215,239,.7)}
+.tf-files{display:grid;gap:4px;font-size:13.5px;color:rgba(255,255,255,.9)}
+.tf-files:empty{display:none}
+.tf-files .is-err{color:#ffd2c2}
+.tf-agree{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:rgba(255,255,255,.88)}
+.tf-agree input{width:20px;height:20px;flex:0 0 20px;margin-top:1px;accent-color:#c8a24a}
+.tf-agree a{color:#fff;text-decoration:underline}
+.train-form .btn-main{background:#fff;color:var(--navy)}
+.tf-msg{margin:0;padding:12px 14px;border-radius:10px;background:rgba(255,255,255,.14);font-size:14px}
+.tf-msg.is-err{background:rgba(255,120,90,.22)}

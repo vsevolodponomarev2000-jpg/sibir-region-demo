@@ -92,3 +92,8 @@ a.vs-i:hover{background:var(--ice0)}
 .v-foto .hero-photo > .wrap{width:100%}
 /* подпись в маленьких плитках превью ленты на главной */
 .feed-prev .feed-cap{left:8px;right:8px;bottom:8px;font-size:12px;padding:3px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc(100% - 16px);width:max-content}
+
+/* переключатель внутри мобильного меню */
+.vswitch.in-nav{display:none}
+@media (max-width:900px){.vswitch:not(.in-nav){display:none}.vswitch.in-nav{display:inline-flex;position:static;box-shadow:none;margin:14px 0 4px;align-self:flex-start}.vswitch.in-nav .vs-l{display:inline}}
+.vswitch.in-nav{padding:5px 10px 5px 5px;white-space:nowrap}

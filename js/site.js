@@ -23,7 +23,7 @@ function applyFilter(key, push) {
   const valid = chips.some((c) => c.dataset.filter === key) ? key : "all";
   chips.forEach((c) => c.setAttribute("aria-pressed", String(c.dataset.filter === valid)));
   let shown = 0;
-  $$(".jobs-group .job").forEach((j) => { const ok = valid === "all" || j.dataset.cat === valid; j.hidden = !ok; if (ok) shown++; });
+  $$(".jobs-group .job").forEach((j) => { const ok = valid === "all" || j.dataset.group === valid || j.dataset.cat === valid; j.hidden = !ok; if (ok) shown++; });
   $$("[data-group-box]").forEach((g) => { g.hidden = !$$(".job", g).some((j) => !j.hidden); });
   const empty = $(".filter-empty"); if (empty) empty.hidden = shown > 0;
   if (push) history.replaceState(null, "", valid === "all" ? location.pathname : "#" + valid);
@@ -31,6 +31,7 @@ function applyFilter(key, push) {
 if (chips.length) {
   chips.forEach((c) => c.addEventListener("click", () => applyFilter(c.dataset.filter, true)));
   applyFilter(decodeURIComponent(location.hash.slice(1)) || "all", false);
+  addEventListener("hashchange", () => applyFilter(decodeURIComponent(location.hash.slice(1)) || "all", false));
 }
 
 /* ---------- окно-ловушка фокуса ---------- */

@@ -12,6 +12,7 @@ window.SR_CONFIG = {
   phone: "+7 900 921-40-40",                      // для звонков
   complaintPhone: "8 905 990-27-35",              // для жалоб и предложений
   cities: ["Новосибирск", "Томск", "Москва"],
+  salaryUnit: "",                                 // единица зарплаты: «в месяц» или «за вахту» — пусто = не пишем
   hours: "",                                      // часы работы, например «Пн–Пт 9:00–18:00»
 
   // Общие ссылки компании (шапка, подвал, контакты). Пусто = значок бледный.
@@ -22,21 +23,29 @@ window.SR_CONFIG = {
 
   // Менеджеры по специальностям: name — имя, ссылки — на личный чат менеджера
   managers: {
-    "betonshchik":        { name: "", max: "", telegram: "", vk: "" },
-    "montazhnik":         { name: "", max: "", telegram: "", vk: "" },
-    "armaturshchik":      { name: "", max: "", telegram: "", vk: "" },
-    "plotnik":            { name: "", max: "", telegram: "", vk: "" },
-    "svarshchik":         { name: "", max: "", telegram: "", vk: "" },
-    "elektromontazhnik":  { name: "", max: "", telegram: "", vk: "" },
-    "podsobnyy-rabochiy": { name: "", max: "", telegram: "", vk: "" },
-    "raznorabochiy":      { name: "", max: "", telegram: "", vk: "" },
-    "komplektovshchik":   { name: "", max: "", telegram: "", vk: "" },
-    "obuchenie":          { name: "", max: "", telegram: "", vk: "" },
+    // Стройка
+    "elektromontazhnik":     { name: "", max: "", telegram: "", vk: "" },
+    "betonshchik":           { name: "", max: "", telegram: "", vk: "" },
+    "montazhnik":            { name: "", max: "", telegram: "", vk: "" },
+    "armaturshchik":         { name: "", max: "", telegram: "", vk: "" },
+    "raznorabochiy":         { name: "", max: "", telegram: "", vk: "" },
+    // Склады
+    "komplektovshchik":      { name: "", max: "", telegram: "", vk: "" },
+    "gruzchik":              { name: "", max: "", telegram: "", vk: "" },
+    // Обучение
+    "montazhnik-vysotnik":   { name: "", max: "", telegram: "", vk: "" },
+    "antikorroziyshchik":    { name: "", max: "", telegram: "", vk: "" },
+    "izolirovshchik":        { name: "", max: "", telegram: "", vk: "" },
+    // Производство
+    "slesar":                { name: "", max: "", telegram: "", vk: "" },
+    "transportirovshchik":   { name: "", max: "", telegram: "", vk: "" },
+    "svarshchik":            { name: "", max: "", telegram: "", vk: "" },
+    "operator-pogruzchika":  { name: "", max: "", telegram: "", vk: "" },
   },
 
   // Реквизиты — для подвала, политики и согласия
   legal: { name: "", inn: "", ogrn: "", address: "" },
 
   // Демо-переключатель «Вариант: 3D | Фото» в углу — только для показа заказчику. На рабочем сайте: false
-  demoSwitch: true,
+  demoSwitch: false,
 };

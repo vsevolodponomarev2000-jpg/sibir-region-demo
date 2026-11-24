@@ -97,3 +97,24 @@ a.vs-i:hover{background:var(--ice0)}
 .vswitch.in-nav{display:none}
 @media (max-width:900px){.vswitch:not(.in-nav){display:none}.vswitch.in-nav{display:inline-flex;position:static;box-shadow:none;margin:14px 0 4px;align-self:flex-start}.vswitch.in-nav .vs-l{display:inline}}
 .vswitch.in-nav{padding:5px 10px 5px 5px;white-space:nowrap}
+
+/* ---------- первый экран: лица на фото не закрываются текстом (24.11) ---------- */
+/* ПК: фото занимает правые ~60%, затемнение — только под текстом слева */
+@media (min-width:901px){
+  .v-foto .hero-photo .hero-slides{left:auto;right:0;width:60%}
+  .v-foto .hero-photo .hero-slide .photo-img{object-position:center 28%}
+  .v-foto .hero-photo .hero-shade{background:
+    linear-gradient(90deg,rgba(11,35,66,1) 0%,rgba(15,47,87,.97) 40%,rgba(15,47,87,.55) 52%,rgba(15,47,87,0) 66%),
+    linear-gradient(0deg,rgba(11,35,66,.45),transparent 30%)}
+}
+/* Телефон: фото — отдельная полоса сверху, текст ниже на тёмно-синем фоне */
+@media (max-width:900px){
+  .v-foto .hero-photo{display:block;padding:0 0 44px;min-height:0}
+  .v-foto .hero-photo .hero-slides{position:relative;inset:auto;height:clamp(230px,64vw,380px)}
+  .v-foto .hero-photo .hero-slide .photo-img{object-position:center 25%}
+  .v-foto .hero-photo .hero-shade{inset:auto;top:0;left:0;right:0;height:clamp(230px,64vw,380px);
+    background:linear-gradient(180deg,rgba(11,35,66,0) 55%,rgba(15,47,87,1) 100%)}
+  .v-foto .hero-photo .hero-shade::after{display:none}
+  .v-foto .hero-photo > .wrap{padding-top:22px}
+  .v-foto .hero-photo .hero-arcs{display:none}
+}

@@ -101,6 +101,26 @@ document.addEventListener("click", (e) => {
   if (off) e.preventDefault();
 });
 
+/* ---------- окно «Позвоните нам» (кнопка в первом экране главной) ---------- */
+const callBox = $("#callModal");
+let releaseCall = null;
+function closeCall() { if (!callBox || callBox.hidden) return; callBox.hidden = true; if (releaseCall) { releaseCall(); releaseCall = null; } }
+document.addEventListener("click", (e) => {
+  if (e.target.closest("[data-callpop]") && callBox) {
+    e.preventDefault();
+    callBox.hidden = false;
+    releaseCall = trap(callBox, closeCall);
+    $(".modal-card", callBox).focus();
+    return;
+  }
+  if (e.target.closest("[data-close-call]")) { closeCall(); return; }
+  const cp = e.target.closest("[data-copy]");
+  if (cp) {
+    const done = () => { const t = cp.textContent; cp.textContent = "Скопировано ✓"; setTimeout(() => { cp.textContent = t; }, 2000); };
+    if (navigator.clipboard) navigator.clipboard.writeText(cp.dataset.copy).then(done, done); else done();
+  }
+});
+
 /* ---------- лента: просмотр на весь экран ---------- */
 const lb = $("#lb");
 if (lb) {

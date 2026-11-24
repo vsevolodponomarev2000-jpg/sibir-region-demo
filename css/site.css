@@ -498,3 +498,12 @@ a.net:not(.is-off):hover{border-color:var(--navy);background:var(--ice0)}
 .nf-photo{width:260px;max-width:70%;height:auto;border-radius:16px;margin:0 auto 18px;display:block}
 @media (max-width:1100px){.dirs{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:600px){.dirs{grid-template-columns:1fr}.job-salary{font-size:23px}.dirs-sec{padding-top:40px}}
+
+/* ---------- окно «Позвоните нам» ---------- */
+.modal-call{text-align:left}
+.call-big{display:flex;align-items:center;gap:12px;margin:16px 0 4px;color:var(--navy);font-size:30px;font-weight:800;letter-spacing:.01em;text-decoration:none}
+.call-big .ico{width:28px;height:28px;color:var(--gold)}
+.call-hours{color:var(--muted);font-size:14px;margin:0 0 6px}
+.call-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.call-link{display:inline-block;margin-top:14px;color:var(--navy);font-weight:700}
+@media (max-width:520px){.call-big{font-size:25px}.call-row{grid-template-columns:1fr}}

@@ -37,7 +37,7 @@
     </nav>
     <div class="top-r">
       <a class="top-phone" href="tel:+79009214040"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"> <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" /> </svg><span>+7 900 921-40-40</span></a>
-      <a class="btn btn-main btn-sm" href="vakansii.html">Трудоустроиться</a>
+      <button class="btn btn-main btn-sm" type="button" data-callpop>Трудоустроиться</button>
       <button class="burger" type="button" aria-label="Меню" aria-expanded="false" aria-controls="nav"><i></i><i></i><i></i></button>
     </div>
   </div>
@@ -105,6 +105,22 @@
     </div>
     <a class="btn btn-ghost modal-call" href="tel:+79009214040"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"> <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" /> </svg><span>Позвонить +7 900 921-40-40</span></a>
     <p class="modal-note">Демо-версия: после подключения кнопка «Трудоустроиться» будет сразу открывать чат менеджера.</p>
+  </div>
+</div>
+<div class="modal" id="callModal" hidden>
+  <div class="modal-bg" data-close-call></div>
+  <div class="modal-card modal-call" role="dialog" aria-modal="true" aria-labelledby="callTitle" tabindex="-1">
+    <button class="modal-x" type="button" data-close-call aria-label="Закрыть"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"> <path d="M18 6 6 18" /> <path d="m6 6 12 12" /> </svg></button>
+    <span class="eyebrow">Трудоустройство</span>
+    <h2 id="callTitle">Позвоните нам</h2>
+    <p>Менеджер подберёт вакансию, расскажет про зарплату и график вахты и поможет с выездом. Для соискателей — бесплатно.</p>
+    <a class="call-big" href="tel:+79009214040"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"> <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" /> </svg><b>+7 900 921-40-40</b></a>
+    
+    <div class="call-row">
+      <a class="btn btn-main" href="tel:+79009214040"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"> <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" /> </svg><span>Позвонить</span></a>
+      <button class="btn btn-ghost" type="button" data-copy="+7 900 921-40-40">Скопировать номер</button>
+    </div>
+    <a class="call-link" href="vakansii.html">Или выберите вакансию →</a>
   </div>
 </div>
 <div class="cookie" id="cookie" hidden>

@@ -52,8 +52,6 @@ a.vs-i:hover{background:var(--ice0)}
 .v-foto .hero-photo .btn-ghost:hover{border-color:#fff;background:rgba(255,255,255,.08)}
 .v-foto .hero-photo .btn-main{background:#fff;color:var(--navy)}
 .v-foto .hero-photo .btn-main:hover{background:var(--ice1)}
-.v-foto .hero-photo .hero-chips li{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.28);color:#fff;backdrop-filter:blur(4px)}
-.v-foto .hero-photo .hero-chips .ico{color:var(--ice2)}
 @media (prefers-reduced-motion:reduce){.hero-slide,.hero-slide .photo-img{animation:none}.hero-slide.s2,.hero-slide.s3{display:none}}
 
 /* карточки и страницы вакансий: фото на всю плашку */

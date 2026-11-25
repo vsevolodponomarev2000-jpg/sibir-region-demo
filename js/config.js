@@ -10,6 +10,7 @@
 window.SR_CONFIG = {
   siteUrl: "https://vsevolodponomarev2000-jpg.github.io/sibir-region-demo/",           // адрес будущего сайта (для og-ссылок)
   phone: "+7 900 921-40-40",                      // для звонков
+  leadsEndpoint: "https://sibir-region-forms.vsevolod-ai.workers.dev", // куда форма отправляет заявки (пусто — форма только показывает телефон)
   complaintPhone: "8 905 990-27-35",              // для жалоб и предложений
   cities: ["Новосибирск", "Томск", "Москва"],
   salaryUnit: "",                                 // единица зарплаты: «в месяц» или «за вахту» — пусто = не пишем
@@ -34,7 +35,7 @@ window.SR_CONFIG = {
     "gruzchik":              { name: "", max: "", telegram: "", vk: "" },
     // Обучение
     "montazhnik-vysotnik":   { name: "", max: "", telegram: "", vk: "" },
-    "antikorroziyshchik":    { name: "", max: "", telegram: "", vk: "" },
+    "promyshlennyy-alpinist":{ name: "", max: "", telegram: "", vk: "" },
     "izolirovshchik":        { name: "", max: "", telegram: "", vk: "" },
     // Производство
     "slesar":                { name: "", max: "", telegram: "", vk: "" },

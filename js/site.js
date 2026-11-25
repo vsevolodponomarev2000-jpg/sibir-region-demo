@@ -153,7 +153,7 @@ if ("IntersectionObserver" in window && !matchMedia("(prefers-reduced-motion: re
   rv.forEach((el) => io.observe(el));
 } else rv.forEach((el) => el.classList.add("in"));
 
-/* ---------- форма записи на обучение (демо: никуда не отправляет, файлы остаются в браузере) ---------- */
+/* ---------- форма записи на обучение: отправка через пересыльщик (config.leadsEndpoint) в Telegram ---------- */
 const tf = $("#trainForm");
 if (tf) {
   const list = $(".tf-files", tf), msg = $(".tf-msg", tf), inp = tf.querySelector('input[name="docs"]');
@@ -179,8 +179,21 @@ if (tf) {
     else if (files.some((f) => f.size > MAX_BYTES)) err = "Каждый файл — не больше 10 МБ.";
     else if (!tf.elements.agree.checked) err = "Нужно согласие на обработку персональных данных.";
     if (err) return show(err, true);
-    const phone = (window.SR_CONFIG && window.SR_CONFIG.phone) || "";
-    show(`Демо-версия: здесь заявка${files.length ? ` и ${files.length} файл(а)` : ""} уйдут менеджеру учебного центра — подключим на этапе 2. Пока можно позвонить: ${phone}.`, false);
+    const cfg = window.SR_CONFIG || {}, phone = cfg.phone || "";
+    if (!cfg.leadsEndpoint) return show(`Заявки пока не подключены — позвоните: ${phone}.`, false);
+    const btn = tf.querySelector('button[type="submit"]'), label = btn.textContent;
+    btn.disabled = true; btn.textContent = "Отправляем…"; msg.hidden = true;
+    const fd = new FormData(tf);
+    fd.set("page", location.pathname.split("/").slice(-2).join("/"));
+    fetch(cfg.leadsEndpoint, { method: "POST", body: fd })
+      .then((r) => r.json().catch(() => ({ ok: false })))
+      .then((res) => {
+        if (!res.ok) throw new Error(res.error || "");
+        tf.reset(); list.textContent = "";
+        show("Заявка отправлена ✓ Менеджер учебного центра перезвонит вам в ближайшее время.", false);
+      })
+      .catch((er) => show(`${er.message || "Не удалось отправить заявку."} Позвоните нам: ${phone}.`, true))
+      .finally(() => { btn.disabled = false; btn.textContent = label; });
   });
 }
 })();

@@ -533,3 +533,10 @@ a.net:not(.is-off):hover{border-color:var(--navy);background:var(--ice0)}
 .object-body h3{font-size:19px;font-weight:800;color:var(--navy);margin:6px 0 8px;line-height:1.25}
 .object-body p{color:var(--text);font-size:15px;margin:0}
 @media (max-width:900px){.objects{grid-template-columns:1fr}}
+
+/* общие условия под зарплатой подразделения */
+.group-pay{margin-bottom:8px}
+.group-lines{list-style:none;margin:0 0 18px;padding:0;display:flex;flex-wrap:wrap;gap:6px 22px;font-size:14.5px;color:var(--text)}
+.group-lines li{display:flex;gap:7px;align-items:center}
+.group-lines .ico{width:16px;height:16px;color:var(--gold);flex:0 0 16px}
+.group-lines-dir{display:grid;gap:4px;margin:8px 0 10px;font-size:13.5px}

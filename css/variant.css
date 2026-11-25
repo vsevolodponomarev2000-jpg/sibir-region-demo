@@ -130,3 +130,8 @@ a.vs-i:hover{background:var(--ice0)}
   .hero-caps{top:12px;right:12px;bottom:auto}
   .hero-cap{top:0;bottom:auto;font-size:12px;padding:5px 11px 5px 9px}
 }
+
+/* ---------- «Проживание» (zhizn.html): каждый объект — отдельная группа фото на своей плашке ---------- */
+.living{display:grid;gap:28px}
+.living-set{background:#fff;border:1px solid var(--line);border-radius:22px;padding:14px;box-shadow:var(--sh)}
+@media (max-width:560px){.living{gap:18px}.living-set{padding:10px;border-radius:18px}}

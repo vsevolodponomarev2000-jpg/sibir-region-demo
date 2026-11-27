@@ -63,4 +63,10 @@ window.SR_CONFIG = {
 
   // Демо-переключатель «Вариант: 3D | Фото» в углу — только для показа заказчику. На рабочем сайте: false
   demoSwitch: false,
+
+  // ---- Рабочий сайт на российском хостинге (сборка: node build.mjs --ru → папка site-ru) ----
+  // В сборке --ru анкеты уходят на свой сервер (/api/anketa.php), leadsEndpoint выше — только для демо на GitHub.
+  indexing: false,      // true — сайт открыт для Яндекса и Google (sitemap.xml, robots.txt). Включать после запуска на домене
+  metrikaId: "",        // номер счётчика Яндекс Метрики (только цифры). Пусто — без Метрики
+  captchaKey: "",       // ключ для сайта Яндекс SmartCaptcha (секретный ключ — в sr-private/config.php). Пусто — без капчи
 };

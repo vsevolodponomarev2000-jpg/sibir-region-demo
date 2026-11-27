@@ -16,11 +16,10 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#0f2f57">
 <link rel="icon" href="../img/favicon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Forum&family=Manrope:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="../css/site.css?v=mwyto90g">
-<link rel="stylesheet" href="../css/variant.css?v=mwyto90g">
+<link rel="preload" href="../fonts/manrope-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../css/fonts.css?v=mwyxybw6">
+<link rel="stylesheet" href="../css/site.css?v=mwyxybw6">
+<link rel="stylesheet" href="../css/variant.css?v=mwyxybw6">
 <script>document.documentElement.classList.add('js')</script>
 </head>
 <body class="v-foto">
@@ -71,8 +70,9 @@
   <label class="tf-field"><span>ФИО*</span><input name="fio" type="text" autocomplete="name" required placeholder="Иванов Иван Иванович"></label>
   <label class="tf-field"><span>Контактный телефон*</span><input name="phone" type="tel" autocomplete="tel" required placeholder="+7 (___) ___-__-__"></label>
   <fieldset class="tf-docs"><legend>Фото документов</legend><label class="tf-doc"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"> <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" /> <circle cx="12" cy="13" r="3" /> </svg><span class="tf-doc-t">Паспорт — главная страница</span><span class="tf-doc-s">Выбрать фото</span><input name="doc_passport" type="file" accept="image/*,.pdf"></label><label class="tf-doc"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"> <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" /> <circle cx="12" cy="13" r="3" /> </svg><span class="tf-doc-t">Паспорт — прописка</span><span class="tf-doc-s">Выбрать фото</span><input name="doc_propiska" type="file" accept="image/*,.pdf"></label><label class="tf-doc"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"> <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" /> <circle cx="12" cy="13" r="3" /> </svg><span class="tf-doc-t">ИНН</span><span class="tf-doc-s">Выбрать фото</span><input name="doc_inn" type="file" accept="image/*,.pdf"></label><label class="tf-doc"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"> <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" /> <circle cx="12" cy="13" r="3" /> </svg><span class="tf-doc-t">СНИЛС</span><span class="tf-doc-s">Выбрать фото</span><input name="doc_snils" type="file" accept="image/*,.pdf"></label><label class="tf-doc"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"> <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" /> <circle cx="12" cy="13" r="3" /> </svg><span class="tf-doc-t">Трудовая книжка (электронная)</span><span class="tf-doc-s">Выбрать фото</span><input name="doc_trud" type="file" accept="image/*,.pdf"></label></fieldset>
-  <p class="tf-hint">JPG, PNG или PDF, до 10 МБ каждый файл.</p>
+  <p class="tf-hint">Фото (JPG, PNG, HEIC) или PDF, до 10 МБ каждый файл.</p>
   <label class="tf-agree"><input name="agree" type="checkbox" required><span>Даю согласие на <a href="../soglasie.html" target="_blank">обработку персональных данных</a>, в том числе паспортных, и подтверждаю, что ознакомлен с <a href="../politika.html" target="_blank">политикой</a>.</span></label>
+  
   <button class="btn btn-main btn-lg btn-block" type="submit">Отправить анкету</button>
   <p class="tf-msg" role="status" hidden></p>
 </form>
@@ -188,7 +188,7 @@
   <button class="btn btn-main btn-sm" type="button" data-cookie-ok>Понятно</button>
 </div>
 
-<script src="../js/config.js?v=mwyto90g"></script>
-<script src="../js/site.js?v=mwyto90g" defer></script>
+<script src="../js/config.js?v=mwyxybw6"></script>
+<script src="../js/site.js?v=mwyxybw6" defer></script>
 </body>
 </html>

@@ -170,6 +170,7 @@ const MAX_FILE_BYTES = 10 * 1024 * 1024;
 const MAX_FILES = 12;
 const SHRINK_FROM_BYTES = 1.5 * 1024 * 1024;   // фото крупнее — уменьшаем в браузере перед отправкой
 const SHRINK_TO_PX = 2000;
+const OPENED_AT = Date.now();                    // сервер отклоняет анкеты, отправленные быстрее 3 секунд (боты)
 
 /** Уменьшает крупное фото (JPEG/PNG/WebP) до 2000 px по большей стороне; остальное и при ошибке — как есть. */
 function shrinkPhoto(file) {
@@ -220,6 +221,8 @@ $$("[data-docs-form]").forEach((form) => {
         ["vacancy", "website", "fio", "phone"].forEach((k) => fd.append(k, form.elements[k].value));
         fd.append("agree", "on");
         fd.append("page", location.pathname.split("/").slice(-2).join("/"));
+        fd.append("t", String(Math.round((Date.now() - OPENED_AT) / 1000)));
+        if (form.elements["smart-token"]) fd.append("smart-token", form.elements["smart-token"].value);
         ready.forEach((x) => fd.append(x.name, x.file, x.file.name));
         return fetch(C.leadsEndpoint, { method: "POST", body: fd });
       })
@@ -231,7 +234,22 @@ $$("[data-docs-form]").forEach((form) => {
         show("Анкета отправлена ✓ Менеджер свяжется с вами в ближайшее время.", false);
       })
       .catch((er) => show(`${er.message || "Не удалось отправить анкету."} Позвоните нам: ${phone}.`, true))
-      .finally(() => { btn.disabled = false; btn.textContent = label; });
+      .finally(() => {
+        btn.disabled = false; btn.textContent = label;
+        if (window.smartCaptcha && typeof window.smartCaptcha.reset === "function") window.smartCaptcha.reset();
+      });
   });
 });
+
+/* ---------- Яндекс Метрика (номер счётчика — metrikaId в config.js; без Вебвизора: в формах персональные данные) ---------- */
+if (/^\d{5,12}$/.test(String(C.metrikaId || ""))) {
+  const id = Number(C.metrikaId);
+  window.ym = window.ym || function () { (window.ym.a = window.ym.a || []).push(arguments); };
+  window.ym.l = Date.now();
+  const tag = document.createElement("script");
+  tag.async = true;
+  tag.src = "https://mc.yandex.ru/metrika/tag.js";
+  document.head.appendChild(tag);
+  window.ym(id, "init", { clickmap: true, trackLinks: true, accurateTrackBounce: true, webvisor: false });
+}
 })();

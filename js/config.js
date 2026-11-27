@@ -1,11 +1,14 @@
 /*
   НАСТРОЙКИ САЙТА «Сибирь Регион» — единственное место, где правятся контакты и ссылки.
-  После правки: в папке site-src выполнить `node build.mjs` (готовый сайт — в папке site).
+  После правки: в папке site-src выполнить `node build.mjs --foto` (готовый сайт — в папке site-foto).
 
-  КАК ПОДКЛЮЧИТЬ МЕНЕДЖЕРОВ:
-  у каждой специальности впишите ссылки менеджера. Если заполнена ссылка max —
-  кнопка «Трудоустроиться» этой специальности СРАЗУ откроет чат в MAX (без всплывающего окна).
-  Если max пустой — показывается окно «Напишите менеджеру» с теми ссылками, что заполнены.
+  КАК ПОДКЛЮЧИТЬ МЕНЕДЖЕРОВ (у каждой специальности):
+  - maxPhone — номер менеджера в MAX. Ссылки «по номеру» у MAX нет, поэтому на сайте номер показывается
+    с кнопкой «Скопировать»: соискатель находит менеджера в MAX через «Найти по номеру».
+  - max — ссылка на профиль в MAX вида https://max.ru/u/… (менеджер копирует её в приложении:
+    Профиль → QR-код → Поделиться). Если заполнена — кнопка «Трудоустроиться» СРАЗУ откроет чат в MAX.
+  - telegram — ссылка вида https://t.me/имя (ник без @).
+  Если max пустой — показывается окно «Напишите менеджеру» с тем, что заполнено.
 */
 window.SR_CONFIG = {
   siteUrl: "https://vsevolodponomarev2000-jpg.github.io/sibir-region-demo/",           // адрес будущего сайта (для og-ссылок)
@@ -17,31 +20,38 @@ window.SR_CONFIG = {
   hours: "",                                      // часы работы, например «Пн–Пт 9:00–18:00»
 
   // Общие ссылки компании (шапка, подвал, контакты). Пусто = значок бледный.
-  social: { max: "", telegram: "", vk: "" },
+  social: {
+    max: "",
+    telegram: "",
+    vk: "https://vk.ru/id1068177842",
+    ok: "https://ok.ru/profile/910026304875",     // Одноклассники
+  },
 
   // Менеджер «по умолчанию» — если у специальности никого нет
-  fallbackManager: { name: "", max: "", telegram: "", vk: "" },
+  fallbackManager: { name: "", maxPhone: "", max: "", telegram: "" },
 
-  // Менеджеры по специальностям: name — имя, ссылки — на личный чат менеджера
+  // Менеджеры по специальностям (список от кадров, 27.11.2026)
   managers: {
     // Стройка
-    "elektromontazhnik":     { name: "", max: "", telegram: "", vk: "" },
-    "betonshchik":           { name: "", max: "", telegram: "", vk: "" },
-    "montazhnik":            { name: "", max: "", telegram: "", vk: "" },
-    "armaturshchik":         { name: "", max: "", telegram: "", vk: "" },
-    "raznorabochiy":         { name: "", max: "", telegram: "", vk: "" },
+    "elektromontazhnik":     { name: "Дарья Сергеевна",         maxPhone: "+7 923 438-31-41", max: "", telegram: "https://t.me/Kadrovik2026" },
+    "betonshchik":           { name: "Ангелина Константиновна", maxPhone: "+7 923 426-21-31", max: "", telegram: "https://t.me/RabotaVaxta57" },
+    "montazhnik":            { name: "Анна Юрьевна",            maxPhone: "+7 952 756-99-00", max: "", telegram: "https://t.me/AnnaRabota26" },
+    "armaturshchik":         { name: "Екатерина Алексеевна",    maxPhone: "+7 960 978-55-35", max: "", telegram: "https://t.me/vahta130" },
+    "svarshchik-stroyka":    { name: "Дарья Сергеевна",         maxPhone: "+7 923 438-31-41", max: "", telegram: "https://t.me/Kadrovik2026" },
+    "raznorabochiy":         { name: "Софья Алексеевна",        maxPhone: "+7 960 978-18-65", max: "", telegram: "" },
+    "podsobnyy-rabochiy":    { name: "Ксения Николаевна",       maxPhone: "+7 952 176-99-00", max: "", telegram: "" }, // Telegram — позже
     // Склады
-    "komplektovshchik":      { name: "", max: "", telegram: "", vk: "" },
-    "gruzchik":              { name: "", max: "", telegram: "", vk: "" },
+    "komplektovshchik":      { name: "Дарья Игоревна",          maxPhone: "+7 953 922-05-97", max: "", telegram: "https://t.me/Darya12242" },
+    "gruzchik":              { name: "Ольга Валерьевна",        maxPhone: "+7 903 951-58-75", max: "", telegram: "https://t.me/Elenavahta26" },
     // Обучение
-    "montazhnik-vysotnik":   { name: "", max: "", telegram: "", vk: "" },
-    "promyshlennyy-alpinist":{ name: "", max: "", telegram: "", vk: "" },
-    "izolirovshchik":        { name: "", max: "", telegram: "", vk: "" },
-    // Производство
-    "slesar":                { name: "", max: "", telegram: "", vk: "" },
-    "transportirovshchik":   { name: "", max: "", telegram: "", vk: "" },
-    "svarshchik":            { name: "", max: "", telegram: "", vk: "" },
-    "operator-pogruzchika":  { name: "", max: "", telegram: "", vk: "" },
+    "montazhnik-vysotnik":   { name: "Анастасия Юрьевна",       maxPhone: "+7 900 922-00-66", max: "", telegram: "https://t.me/KadroviK26" },
+    "promyshlennyy-alpinist":{ name: "Анастасия Юрьевна",       maxPhone: "+7 900 922-00-66", max: "", telegram: "https://t.me/KadroviK26" },
+    "izolirovshchik":        { name: "Анастасия Юрьевна",       maxPhone: "+7 900 922-00-66", max: "", telegram: "https://t.me/KadroviK26" },
+    // Производство (номер MAX Виктории Олеговны уточняется — в списке он записан с ошибкой)
+    "slesar":                { name: "Виктория Олеговна",       maxPhone: "", max: "", telegram: "https://t.me/rosgospro" },
+    "transportirovshchik":   { name: "Виктория Олеговна",       maxPhone: "", max: "", telegram: "https://t.me/rosgospro" },
+    "svarshchik":            { name: "Дарья Сергеевна",         maxPhone: "+7 923 438-31-41", max: "", telegram: "https://t.me/Kadrovik2026" },
+    "operator-pogruzchika":  { name: "Виктория Олеговна",       maxPhone: "", max: "", telegram: "https://t.me/rosgospro" },
   },
 
   // Реквизиты — для подвала, политики и согласия

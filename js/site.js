@@ -1,4 +1,4 @@
-// Поведение сайта: меню, фильтр вакансий, «Трудоустроиться», просмотр ленты, cookie, появление блоков.
+// Поведение сайта: меню, фильтр вакансий, «Трудоустроиться», просмотр фото, cookie, появление блоков, анкета с документами.
 (() => {
 "use strict";
 const C = window.SR_CONFIG || {};
@@ -51,37 +51,43 @@ function trap(root, onClose) {
   return () => { document.removeEventListener("keydown", key); document.documentElement.style.overflow = ""; if (last && last.focus) last.focus(); };
 }
 
-/* ---------- «Трудоустроиться» ---------- */
+/* ---------- «Трудоустроиться»: окно с контактами менеджера специальности ---------- */
 const modal = $("#applyModal");
 let release = null;
+const tgNick = (u) => String(u).replace(/^https?:\/\/t\.me\//i, "");
 function managerFor(slug) {
   const m = (C.managers || {})[slug];
-  if (m && (isUrl(m.max) || isUrl(m.telegram) || isUrl(m.vk))) return m;
+  if (m && (isUrl(m.max) || m.maxPhone || isUrl(m.telegram))) return m;
   return C.fallbackManager || {};
 }
+function el(tag, attrs, ...kids) {
+  const n = document.createElement(tag);
+  Object.entries(attrs || {}).forEach(([k, v]) => n.setAttribute(k, v));
+  n.append(...kids);
+  return n;
+}
+/** Пункт окна: MAX-ссылка, номер MAX с копированием или Telegram (та же разметка, что managerContacts в lib/ui.mjs). */
+function netItem(kind, m) {
+  const ico = kind === "tg" ? $("#icoTg").content.cloneNode(true) : el("span", { class: "ico ico-max", "aria-hidden": "true" }, "MAX");
+  if (kind === "max") return el("a", { class: "mgr-i mgr-max", href: m.max, target: "_blank", rel: "noopener" }, ico, el("span", {}, el("b", {}, "Написать в MAX")));
+  if (kind === "maxPhone") return el("button", { class: "mgr-i mgr-max", type: "button", "data-copy": m.maxPhone, "data-copied": "Номер скопирован — найдите в MAX: «Найти по номеру»" },
+    ico, el("span", {}, el("b", {}, m.maxPhone), el("small", {}, "MAX · нажмите, чтобы скопировать номер")));
+  return el("a", { class: "mgr-i mgr-tg", href: m.telegram, target: "_blank", rel: "noopener" }, ico, el("span", {}, el("b", {}, "Написать в Telegram"), el("small", {}, "@" + tgNick(m.telegram))));
+}
 function closeModal() { if (!modal || modal.hidden) return; modal.hidden = true; if (release) { release(); release = null; } }
-function openModal(slug, title, m) {
-  const txt = $("#applyText", modal);
+function openModal(title, m, page) {
+  const txt = $("#applyText", modal), nets = $(".modal-nets", modal), form = $(".modal-form", modal);
   txt.textContent = "";
-  if (slug) {
-    txt.append("Здесь соискатель перейдёт в чат с менеджером по специальности ");
-    const b = document.createElement("b"); b.textContent = `«${title}»`; txt.append(b, " в MAX. ");
-  } else {
-    txt.append("Здесь соискатель перейдёт в чат с менеджером в MAX — он подберёт подходящую вакансию. ");
-  }
-  const any = isUrl(m.max) || isUrl(m.telegram) || isUrl(m.vk);
-  txt.append(any ? "Выберите удобный мессенджер." : "Ссылки менеджеров подключим, когда пришлёте контакты.");
-  $$("[data-net]", modal).forEach((a) => {
-    const url = m[a.dataset.net];
-    const small = $("small", a);
-    if (isUrl(url)) {
-      a.href = url; a.target = "_blank"; a.rel = "noopener"; a.classList.remove("is-off"); a.removeAttribute("aria-disabled");
-      small.textContent = m.name ? `менеджер: ${m.name}` : "откроется чат";
-    } else {
-      a.removeAttribute("href"); a.removeAttribute("target"); a.classList.add("is-off"); a.setAttribute("aria-disabled", "true");
-      small.textContent = "подключим";
-    }
-  });
+  if (title) txt.append("Специальность ", el("b", {}, "«" + title + "»"), ". ");
+  if (m.name) txt.append("Ваш менеджер — ", el("b", {}, m.name), ". ");
+  const items = [isUrl(m.max) ? "max" : (m.maxPhone ? "maxPhone" : ""), isUrl(m.telegram) ? "tg" : ""].filter(Boolean);
+  txt.append(items.length ? "Напишите в удобный мессенджер — подберём объект и расскажем об условиях." : "Позвоните нам — менеджер подберёт вакансию.");
+  nets.textContent = "";
+  items.forEach((k) => nets.append(netItem(k, m)));
+  nets.hidden = !items.length;
+  const anketa = $("#anketa") ? "#anketa" : (page ? page + "#anketa" : "");
+  form.hidden = !anketa;
+  if (anketa) form.setAttribute("href", anketa);
   modal.hidden = false;
   release = trap(modal, closeModal);
   $(".modal-card", modal).focus();
@@ -90,15 +96,26 @@ document.addEventListener("click", (e) => {
   const btn = e.target.closest("[data-apply]");
   if (btn && modal) {
     e.preventDefault();
-    const slug = btn.dataset.apply || "", title = btn.dataset.title || "";
-    const m = managerFor(slug);
-    if (isUrl(m.max)) { window.open(m.max, "_blank", "noopener"); return; }   // ссылка есть — сразу в MAX
-    openModal(slug, title, m);
+    const m = managerFor(btn.dataset.apply || "");
+    if (isUrl(m.max)) { window.open(m.max, "_blank", "noopener"); return; }   // ссылка на профиль MAX — сразу в чат
+    openModal(btn.dataset.title || "", m, btn.dataset.page || "");
     return;
   }
-  if (e.target.closest("[data-close]")) closeModal();
-  const off = e.target.closest(".net.is-off");
-  if (off) e.preventDefault();
+  if (e.target.closest("[data-close]") || e.target.closest(".modal-form[href^='#']")) closeModal();
+});
+
+/* ---------- копирование номера (окно «Позвоните нам», номер MAX менеджера) ---------- */
+document.addEventListener("click", (e) => {
+  const cp = e.target.closest("[data-copy]");
+  if (!cp) return;
+  const target = $("small", cp) || cp;
+  if (!target.dataset.orig) target.dataset.orig = target.textContent;
+  const done = () => {
+    target.textContent = cp.dataset.copied || "Скопировано ✓";
+    clearTimeout(Number(cp.dataset.timer));
+    cp.dataset.timer = String(setTimeout(() => { target.textContent = target.dataset.orig; }, 3000));
+  };
+  if (navigator.clipboard) navigator.clipboard.writeText(cp.dataset.copy).then(done, done); else done();
 });
 
 /* ---------- окно «Позвоните нам» (кнопка в первом экране главной) ---------- */
@@ -113,12 +130,7 @@ document.addEventListener("click", (e) => {
     $(".modal-card", callBox).focus();
     return;
   }
-  if (e.target.closest("[data-close-call]")) { closeCall(); return; }
-  const cp = e.target.closest("[data-copy]");
-  if (cp) {
-    const done = () => { const t = cp.textContent; cp.textContent = "Скопировано ✓"; setTimeout(() => { cp.textContent = t; }, 2000); };
-    if (navigator.clipboard) navigator.clipboard.writeText(cp.dataset.copy).then(done, done); else done();
-  }
+  if (e.target.closest("[data-close-call]")) closeCall();
 });
 
 /* ---------- лента: просмотр на весь экран ---------- */
@@ -153,47 +165,73 @@ if ("IntersectionObserver" in window && !matchMedia("(prefers-reduced-motion: re
   rv.forEach((el) => io.observe(el));
 } else rv.forEach((el) => el.classList.add("in"));
 
-/* ---------- форма записи на обучение: отправка через пересыльщик (config.leadsEndpoint) в Telegram ---------- */
-const tf = $("#trainForm");
-if (tf) {
-  const list = $(".tf-files", tf), msg = $(".tf-msg", tf), inp = tf.querySelector('input[name="docs"]');
-  const MAX_FILES = 5, MAX_BYTES = 10 * 1024 * 1024;
+/* ---------- анкета с фото документов (страница вакансии): отправка через пересыльщик (config.leadsEndpoint) ---------- */
+const MAX_FILE_BYTES = 10 * 1024 * 1024;
+const MAX_FILES = 12;
+const SHRINK_FROM_BYTES = 1.5 * 1024 * 1024;   // фото крупнее — уменьшаем в браузере перед отправкой
+const SHRINK_TO_PX = 2000;
+
+/** Уменьшает крупное фото (JPEG/PNG/WebP) до 2000 px по большей стороне; остальное и при ошибке — как есть. */
+function shrinkPhoto(file) {
+  if (!/^image\/(jpeg|png|webp)$/.test(file.type) || file.size < SHRINK_FROM_BYTES || !window.createImageBitmap) return Promise.resolve(file);
+  return createImageBitmap(file).then((bmp) => {
+    const k = Math.min(1, SHRINK_TO_PX / Math.max(bmp.width, bmp.height));
+    const cv = document.createElement("canvas");
+    cv.width = Math.round(bmp.width * k); cv.height = Math.round(bmp.height * k);
+    cv.getContext("2d").drawImage(bmp, 0, 0, cv.width, cv.height);
+    return new Promise((ok) => cv.toBlob((b) => ok(b && b.size < file.size ? new File([b], file.name.replace(/\.\w+$/, "") + ".jpg", { type: "image/jpeg" }) : file), "image/jpeg", 0.85));
+  }).catch(() => file);
+}
+
+$$("[data-docs-form]").forEach((form) => {
+  const msg = $(".tf-msg", form);
+  const inputs = $$('input[type="file"]', form);
   const show = (text, isErr) => { msg.hidden = false; msg.classList.toggle("is-err", isErr); msg.textContent = text; };
-  inp.addEventListener("change", () => {
-    list.textContent = "";
-    [...inp.files].forEach((f) => {
-      const li = document.createElement("li");
-      li.textContent = `${f.name} · ${(f.size / 1048576).toFixed(1)} МБ${f.size > MAX_BYTES ? " — больше 10 МБ" : ""}`;
-      if (f.size > MAX_BYTES) li.className = "is-err";
-      list.appendChild(li);
+  inputs.forEach((inp) => {
+    const state = inp.closest(".tf-doc").querySelector(".tf-doc-s");
+    const empty = state.textContent;
+    inp.addEventListener("change", () => {
+      const files = [...inp.files];
+      const big = files.some((f) => f.size > MAX_FILE_BYTES);
+      state.textContent = !files.length ? empty : (files.length === 1 ? files[0].name : `Выбрано файлов: ${files.length}`) + (big ? " — больше 10 МБ" : " ✓");
+      inp.closest(".tf-doc").classList.toggle("is-set", files.length > 0 && !big);
+      inp.closest(".tf-doc").classList.toggle("is-err", big);
     });
   });
-  tf.addEventListener("submit", (e) => {
+  form.addEventListener("submit", (e) => {
     e.preventDefault();
-    const files = [...inp.files];
-    const fio = tf.elements.fio.value.trim(), digits = tf.elements.phone.value.replace(/\D/g, "");
+    const all = inputs.flatMap((inp) => [...inp.files].map((file) => ({ name: inp.name, file })));
+    const fio = form.elements.fio.value.trim(), digits = form.elements.phone.value.replace(/\D/g, "");
     let err = "";
     if (fio.length < 3) err = "Укажите ФИО.";
     else if (digits.length < 10) err = "Укажите контактный телефон.";
-    else if (files.length > MAX_FILES) err = "Можно приложить не больше 5 файлов.";
-    else if (files.some((f) => f.size > MAX_BYTES)) err = "Каждый файл — не больше 10 МБ.";
-    else if (!tf.elements.agree.checked) err = "Нужно согласие на обработку персональных данных.";
+    else if (all.length > MAX_FILES) err = `Можно приложить не больше ${MAX_FILES} файлов.`;
+    else if (all.some((x) => x.file.size > MAX_FILE_BYTES)) err = "Каждый файл — не больше 10 МБ.";
+    else if (!form.elements.agree.checked) err = "Нужно согласие на обработку персональных данных.";
     if (err) return show(err, true);
-    const cfg = window.SR_CONFIG || {}, phone = cfg.phone || "";
-    if (!cfg.leadsEndpoint) return show(`Заявки пока не подключены — позвоните: ${phone}.`, false);
-    const btn = tf.querySelector('button[type="submit"]'), label = btn.textContent;
-    btn.disabled = true; btn.textContent = "Отправляем…"; msg.hidden = true;
-    const fd = new FormData(tf);
-    fd.set("page", location.pathname.split("/").slice(-2).join("/"));
-    fetch(cfg.leadsEndpoint, { method: "POST", body: fd })
+    const phone = C.phone || "";
+    if (!C.leadsEndpoint) return show(`Анкеты пока не подключены — позвоните: ${phone}.`, false);
+    const btn = form.querySelector('button[type="submit"]'), label = btn.textContent;
+    btn.disabled = true; btn.textContent = all.length ? "Готовим фото…" : "Отправляем…"; msg.hidden = true;
+    Promise.all(all.map((x) => shrinkPhoto(x.file).then((file) => ({ name: x.name, file }))))
+      .then((ready) => {
+        btn.textContent = "Отправляем…";
+        const fd = new FormData();
+        ["vacancy", "website", "fio", "phone"].forEach((k) => fd.append(k, form.elements[k].value));
+        fd.append("agree", "on");
+        fd.append("page", location.pathname.split("/").slice(-2).join("/"));
+        ready.forEach((x) => fd.append(x.name, x.file, x.file.name));
+        return fetch(C.leadsEndpoint, { method: "POST", body: fd });
+      })
       .then((r) => r.json().catch(() => ({ ok: false })))
       .then((res) => {
         if (!res.ok) throw new Error(res.error || "");
-        tf.reset(); list.textContent = "";
-        show("Заявка отправлена ✓ Менеджер учебного центра перезвонит вам в ближайшее время.", false);
+        form.reset();
+        inputs.forEach((inp) => inp.dispatchEvent(new Event("change")));
+        show("Анкета отправлена ✓ Менеджер свяжется с вами в ближайшее время.", false);
       })
-      .catch((er) => show(`${er.message || "Не удалось отправить заявку."} Позвоните нам: ${phone}.`, true))
+      .catch((er) => show(`${er.message || "Не удалось отправить анкету."} Позвоните нам: ${phone}.`, true))
       .finally(() => { btn.disabled = false; btn.textContent = label; });
   });
-}
+});
 })();
